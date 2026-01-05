@@ -44,10 +44,15 @@ public class Serveur {
 				public void run() {
 					try {
 						Date d = new Date();
-						Thread.sleep(30*1000);
+						Thread.sleep(100*1000);
 						
 							try {
-								currentWinner.afficheGagnant();
+								if(currentWinner != null) {
+									currentWinner.afficheGagnant();
+								}
+								else {
+									System.out.println("aucune demande, enchere annulée");
+								}
 								
 							} catch (RemoteException e) {
 								// TODO Auto-generated catch block
