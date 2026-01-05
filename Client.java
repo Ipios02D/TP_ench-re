@@ -14,8 +14,6 @@ public class Client {
 			System.out.println("Client connecté au ServeurEnchere");
 			
 			
-			User u1 = new User("Paul");
-			
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
