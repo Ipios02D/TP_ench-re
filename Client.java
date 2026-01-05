@@ -7,8 +7,14 @@ import java.rmi.RemoteException;
 
 public class Client {
 
+	public String nameClient;
+	
 	public static void main(String[] args) {
+		
+		
 		try {
+			
+			
 			ServiceCtoS sc = (ServiceCtoS) Naming.lookup("ServicesObjetDistant");
 			
 			System.out.println("Client connecté au ServeurEnchere");
@@ -18,6 +24,10 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String getName() {
+		return nameClient;
 	}
 	
 }
