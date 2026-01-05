@@ -19,14 +19,16 @@ public class Serveur {
 	}
 
 
-	private static int prix;
-	private static String currentWinner;
-	private static Date date;
+	static int prix;
+	static ServiceStoC currentWinner;
+	static Date date;
 
 	public static void main(String[] args) {
 		try {
+			
+			
 			prix = 1000;
-			currentWinner = "";
+			currentWinner = null;
 			
 			LocateRegistry.createRegistry(1099);
 
@@ -35,6 +37,33 @@ public class Serveur {
 			
 			System.out.println("Service d'Enchere créé ...");
 
+			
+			
+			Thread t = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						Date d = new Date();
+						Thread.sleep(1000);
+						if(date.compareTo(d) == 0) {
+							try {
+								currentWinner.afficheGagnant();
+							} catch (RemoteException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+						
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			t.start();
+			
 		} catch (MalformedURLException | RemoteException | AlreadyBoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

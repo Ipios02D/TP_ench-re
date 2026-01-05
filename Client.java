@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Date;
 
 public class Client {
 
@@ -13,8 +14,6 @@ public class Client {
 		
 		
 		try {
-			
-			
 			ServiceCtoS sc = (ServiceCtoS) Naming.lookup("ServicesObjetDistant");
 			
 			System.out.println("Client connecté au ServeurEnchere");
