@@ -5,12 +5,14 @@ import java.rmi.RemoteException;
 
 public class Client {
 
+	public String nameClient;
+	
 	public static void main(String[] args) {
-		new Client();
-	}
-
-	public Client() {
+		
+		
 		try {
+			
+			
 			ServiceCtoS sc = (ServiceCtoS) Naming.lookup("ServicesObjetDistant");
 			
 			System.out.println("Client connecté au ServeurEnchere");
@@ -22,13 +24,9 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-
-	// Appelé par Accueil quand on clique sur "Entrer"
-    public void connexion(String nomUtilisateur) {
-        System.out.println("Simulation connexion pour : " + nomUtilisateur);
-        
-        // On ouvre la page d'enchère
-        new PageEnchere(nomUtilisateur, this);
-    }
+	
+	public String getName() {
+		return nameClient;
+	}
 	
 }
