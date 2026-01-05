@@ -16,11 +16,10 @@ public class Client {
 			ServiceCtoS sc = (ServiceCtoS) Naming.lookup("ServicesObjetDistant");
 			
 			System.out.println("Client connecté au ServeurEnchere");
-
-			new Accueil(this);
 			
 			
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
