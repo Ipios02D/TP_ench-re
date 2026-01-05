@@ -153,13 +153,12 @@ public class PageEnchere extends Frame {
     private void soumettreEnchere() {
         try {
             double offre = Double.parseDouble(txtProposition.getText());
-            System.out.println("Envoi de l'offre via RMI : " + offre + " par " + nomAcheteur);
             
-            // ICI : Appeler la méthode du serveur RMI
-            // server.proposerPrix(offre, nomAcheteur);
+            // APPEL CORRIGÉ : On passe par le contrôleur (Client)
+            controleur.soumettreEnchere(offre);
             
-            // Pour le test interface uniquement, on met à jour localement
-            mettreAJourPrix(offre, nomAcheteur); 
+            // On vide juste le champ, on n'appelle PAS mettreAJourPrix ici.
+            // C'est le serveur qui nous rappellera via newPrix() pour le faire.
             txtProposition.setText("");
             
         } catch (NumberFormatException ex) {
