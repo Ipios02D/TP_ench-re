@@ -11,11 +11,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Accueil extends Frame {
-    private ClientRMI controleur;
+    private Client controleur;
     private TextField nomField;
     private Button btnEntrer;
 
-    public Accueil(ClientRMI controleur) {
+    public Accueil(Client controleur) {
         super("Bienvenue aux Enchères");
         this.controleur = controleur;
 

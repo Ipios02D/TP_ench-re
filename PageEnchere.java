@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PageEnchere extends Frame {
-    private ClientRMI controleur;
+    private Client controleur;
     
     // Données de l'utilisateur
     private String nomAcheteur;
@@ -35,7 +35,7 @@ public class PageEnchere extends Frame {
     private Button plus100;
     private TextArea txtDescription;
 
-    public PageEnchere(String nomAcheteur, ClientRMI controleur) {
+    public PageEnchere(String nomAcheteur, Client controleur) {
         super("Salle d'enchères - Connecté en tant que : " + nomAcheteur);
         this.nomAcheteur = nomAcheteur;
         this.controleur = controleur;
