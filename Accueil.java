@@ -5,22 +5,20 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Accueil extends Frame {
-    private Client controleur;
-    private TextField nomField;
-    private Button btnEntrer;
+    private final Client controleur;
+    private final TextField nomField;
+    private final Button btnEntrer;
 
     public Accueil(Client controleur) {
-        super("Bienvenue aux Enchères");
+        super("Bienvenue");
         this.controleur = controleur;
 
-        setLayout(new BorderLayout()); // Utilisation de BorderLayout pour centrer
-
+        setLayout(new BorderLayout());
+        
         // --- Panneau Central ---
         Panel centerPanel = new Panel(new GridLayout(3, 1, 10, 10));
         
@@ -39,26 +37,12 @@ public class Accueil extends Frame {
         add(new Panel(), BorderLayout.EAST);
         add(new Panel(), BorderLayout.WEST);
 
-        // --- Gestion des événements ---
-        
-        // Clic sur le bouton
-        btnEntrer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                lancerEnchere();
-            }
-        });
+        // Actions
+        btnEntrer.addActionListener(e -> valider());
+        nomField.addActionListener(e -> valider());
 
-        // Appui sur "Entrée" dans le champ de texte
-        nomField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                lancerEnchere();
-            }
-        });
-
-        // Fermeture de la fenêtre
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent we) {
                 System.exit(0);
             }
@@ -69,12 +53,11 @@ public class Accueil extends Frame {
         setVisible(true);
     }
 
-    private void lancerEnchere() {
+    private void valider() {
         String nom = nomField.getText().trim();
         if (!nom.isEmpty()) {
             this.setVisible(false);
-            // Au lieu de créer PageEnchere ici, on demande au ClientRMI de le faire
-            controleur.connexion(nom);
+            controleur.connexion(nom); // Appel vers Client
         }
     }
 }

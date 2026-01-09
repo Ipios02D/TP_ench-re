@@ -1,75 +1,76 @@
-package dwEnchere;
-
 import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.ArrayList;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
-import java.util.jar.Attributes.Name;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
+public class Serveur extends UnicastRemoteObject implements InterfaceServeur {
+    private Article article;
+    private InterfaceCallback[] clients;
+    private int compteurClients = 0;
 
-public class Serveur {
-	
-	ArrayList<String> name =new ArrayList<>();		// Dans le futur, check si probleme différent nom
-	
-	public ArrayList<String> getName() {
-		return name;
-	}
+    protected Serveur() throws RemoteException {
+        super();
+        clients = new InterfaceCallback[50];
+        this.article = new Article("Description de l'article", 100.0, new Date(System.currentTimeMillis() + 30000), "Infos vendeur", "exempleArticle.png");
 
-	static String nom = "NONE";
-	static int prix;
-	static ServiceStoC currentWinner;
-	static Date date = new Date(System.currentTimeMillis()+30*1000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("L'enchère est terminée !");
+                for (int i = 0; i < compteurClients; i++) {
+                    try {
+                        clients[i].finEnchere(article.getNomMeneur(), article.getPrixActuel(), article.getInfosVendeur());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, article.getDateFin());
+    }
 
-	public static void main(String[] args) {
-		try {
-			prix = 1000;
-			currentWinner = null;
-			
-			LocateRegistry.createRegistry(1099);
+    @Override
+    public synchronized void callMeBack(InterfaceCallback obj, String nom) throws RemoteException {
+        obj.doCallback();
+        clients[compteurClients++] = obj;
+        System.err.println(nom + " a été enregistré pour un callback.");
+        obj.nouveauPrix(article.getPrixActuel(), article.getNomMeneur(), article.getDateFin());
+    }
 
-			ObjetDistant obj = new ObjetDistant();
-			Naming.bind("ServicesObjetDistant", obj);
-			
-			System.out.println("Service d'Enchere créé ...");
+    @Override
+    public synchronized boolean  Encherire(double montant, String nomAcheteur) throws RemoteException {
+        if (montant > article.getPrixActuel()) {
+            article.setPrixActuel(montant);
+            article.setNomMeneur(nomAcheteur);
+            System.out.println("Nouvelle enchère de " + montant + " € par " + nomAcheteur);
+            for (int i = 0; i < compteurClients; i++) {
+                clients[i].nouveauPrix(montant, nomAcheteur, article.getDateFin());
+            }
+            return true;
+        } else {
+            System.out.println("Enchère de " + montant + " € par " + nomAcheteur + " rejetée (prix actuel : " + article.getPrixActuel() + " €)");
+            return false;
+        }
+        
+    }
 
-			
-			
-			Thread t = new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						Date d = new Date();
-						Thread.sleep(30*1000);
-						
-							try {
-								currentWinner.afficheGagnant();
-								
-							} catch (RemoteException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						
-						
-						
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
-			t.start();
-			
-		} catch (MalformedURLException | RemoteException | AlreadyBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
-	
+    @Override
+    public Article getArticle() throws RemoteException {
+        return article;
+    }
+
+    public static void main(String[] args) {
+        try {
+            LocateRegistry.createRegistry(1099); // Démarrer le registre RMI
+            Serveur serveur = new Serveur();
+            Naming.rebind("ServicesObjetDistant", serveur);
+            System.out.println("Serveur RMI démarré et en attente de connexions...");
+        } catch (MalformedURLException | RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 }
