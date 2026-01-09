@@ -1,42 +1,27 @@
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Label;
-import java.awt.Panel;
-import java.awt.TextArea;
-import java.awt.TextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.rmi.RemoteException;
 
 public class PageEnchere extends Frame {
     private final Client controleur;
     private final String nomAcheteur;
-    private PhotoPanel photoPanel; // Pour pouvoir y accéder
-    private Image currentImage = null; // L'image à dessiner
+    private final PhotoPanel photoPanel;
+    private Image currentImage;
     private double prixActuel;
 
     // Composants
-    private Label lblPrixActuel;
-    private Label lblDernierAcheteur;
-    private Label lblDateCloture;
-    private Label lblStatus; 
-    private TextField txtProposition;
-    private Button btnEncherir;
-    private TextArea txtDescription;
-    private Button plus10;
-    private Button plus100;
+    private final Label lblPrixActuel;
+    private final Label lblDernierAcheteur;
+    private final Label lblDateCloture;
+    private final Label lblStatus; 
+    private final TextField txtProposition;
+    private final Button btnEncherir;
+    private final TextArea txtDescription;
+    private final Button plus10;
+    private final Button plus100;
+    private final Label lbloffre;
 
     public PageEnchere(String nomAcheteur, Client controleur) {
         super("Enchères - " + nomAcheteur);
@@ -68,6 +53,7 @@ public class PageEnchere extends Frame {
         lblDernierAcheteur = new Label("Meneur : -");
         lblDateCloture = new Label("Fin : -");
         lblStatus = new Label(""); 
+        lbloffre = new Label("Votre offre :");
         lblStatus.setForeground(Color.RED);
 
         infoPanel.add(new Label("Description :"));
@@ -87,7 +73,7 @@ public class PageEnchere extends Frame {
         plus10 = new Button("+10");
         plus100 = new Button("+100");
         
-        basPanel.add(new Label("Votre offre :"));
+        basPanel.add(lbloffre);
         basPanel.add(txtProposition);
         basPanel.add(btnEncherir);
         basPanel.add(plus10);
@@ -138,8 +124,8 @@ public class PageEnchere extends Frame {
         setVisible(true);
     }
 
+    //Appelée par le client pour charger l'article et l'afficher
     public void chargerArticle(Article a) {
-        // Mise à jour de la description
         txtDescription.setText(a.getDescription());
         
         // Conversion byte[] -> Image AWT
@@ -151,19 +137,20 @@ public class PageEnchere extends Frame {
         }
     }
 
+    //Appelée par les boutons et délègue la tache au serveur via le client
     private void soumettre() {
         try {
+            // Récupération de l'offre
             double offre = Double.parseDouble(txtProposition.getText());
-            // Déléguer l'envoi de l'enchère au Client (controleur) plutôt que d'accéder à un champ 'serveur' inexistant
-            controleur.soumettreEnchere(offre, nomAcheteur);
+
+            controleur.getServeur().Encherire(offre, nomAcheteur);
             txtProposition.setText("");
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException | RemoteException e) {
             System.out.println("Montant invalide");
         }
     }
 
-    // --- Méthodes de mise à jour (Appelées par Client.java) ---
-
+    //Méthodes de mise à jour de l'interface appelées par le client
     public void mettreAJourInfos(double prix, String meneur, Date dateFin) {
         lblPrixActuel.setText("Prix actuel : " + prix + " €");
         this.prixActuel = prix;
@@ -186,14 +173,19 @@ public class PageEnchere extends Frame {
     public void afficherEcranGagnant(double prixFinal, String infosVendeur) {
         lblStatus.setText("FELICITATIONS ! VOUS AVEZ GAGNÉ.");
         lblStatus.setForeground(new Color(0, 100, 0));
-        lblPrixActuel.setText("VENTE TERMINÉE.\nPrix final : " + prixFinal);
-        lblDernierAcheteur.setText(" €\nContact Vendeur :\n" + infosVendeur);
+        lblPrixActuel.setText("VENTE TERMINÉE.\nPrix final : " + prixFinal+"€");
+        lblDernierAcheteur.setText("Contact Vendeur :\n" + infosVendeur);
         
         // On désactive les boutons et les fait disparaitres
         btnEncherir.setEnabled(false);
         btnEncherir.setVisible(false);
         txtProposition.setEnabled(false);
         txtProposition.setVisible(false);
+        plus10.setEnabled(false);
+        plus10.setVisible(false);
+        plus100.setEnabled(false);
+        plus100.setVisible(false);
+        lbloffre.setVisible(false);
     }
 
     public void afficherEcranPerdant() {
@@ -204,6 +196,11 @@ public class PageEnchere extends Frame {
         btnEncherir.setVisible(false);
         txtProposition.setEnabled(false);
         txtProposition.setVisible(false);
+        plus10.setEnabled(false);
+        plus10.setVisible(false);
+        plus100.setEnabled(false);
+        plus100.setVisible(false);
+        lbloffre.setVisible(false);
     }
 
     // Classe interne pour le dessin

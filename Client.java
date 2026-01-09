@@ -10,39 +10,37 @@ public class Client extends UnicastRemoteObject implements InterfaceCallback  {
     private String nom;
     private InterfaceServeur serveur;
 
+    // Constructeur
     public Client() throws Exception {
         super();
         new Accueil(this); 
     }
 
+    // Getter pour le serveur
+    public InterfaceServeur getServeur() {
+        return serveur;
+    } 
+
+    // Connexion au serveur RMI
     public void connexion(String nom) {
         this.nom = nom;
         try {
             Client obj = this;
             this.serveur = (InterfaceServeur) Naming.lookup("ServicesObjetDistant");
             
+            // Récupération de l'article initial et création de la page d'enchère
             Article articleInitial = serveur.getArticle();
             this.pageEnchere = new PageEnchere(nom, this);
             pageEnchere.chargerArticle(articleInitial);
 
+            // Enregistrement du callback auprès du serveur
             serveur.callMeBack(obj, nom);
         } catch (NotBoundException | MalformedURLException | RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    // Délégation de l'enchère au serveur RMI
-    public void soumettreEnchere(double montant, String nomAcheteur) {
-        try {
-            if (serveur.Encherire(montant, nomAcheteur)) {
-                System.out.println("Enchère de " + montant + " € soumise avec succès.");
-            } else {
-                System.out.println("Enchère de " + montant + " € rejetée par le serveur.");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
+    // Implémentation des méthodes de l'interface Callback
 
     @Override
     public void doCallback() throws RemoteException {

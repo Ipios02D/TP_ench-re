@@ -30,7 +30,7 @@ public class Accueil extends Frame {
         centerPanel.add(nomField);
         centerPanel.add(btnEntrer);
 
-        // Ajout de marges via des panels vides (astuce AWT)
+        // Ajout de marges via des panels vides
         add(centerPanel, BorderLayout.CENTER);
         add(new Panel(), BorderLayout.NORTH);
         add(new Panel(), BorderLayout.SOUTH);
