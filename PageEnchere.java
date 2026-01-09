@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.rmi.RemoteException;
-
+// Auteur : Emilien Cousin et Clément Cano
 public class PageEnchere extends Frame {
     private final Client controleur;
     private final String nomAcheteur;

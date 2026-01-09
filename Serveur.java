@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+// Auteur : Emilien Cousin et Clément Cano
 public class Serveur extends UnicastRemoteObject implements InterfaceServeur {
     private Article article;
     private InterfaceCallback[] clients;

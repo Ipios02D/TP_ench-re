@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
+// Auteur : Emilien Cousin et Clément Cano
 public interface InterfaceCallback extends Remote {
     public void doCallback() throws RemoteException;
 

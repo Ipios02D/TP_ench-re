@@ -4,7 +4,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
-
+// Auteur : Emilien Cousin et Clément Cano
 public class Client extends UnicastRemoteObject implements InterfaceCallback  {
     private PageEnchere pageEnchere;
     private String nom;

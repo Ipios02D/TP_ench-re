@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.Date;
-
+// Auteur : Emilien Cousin et Clément Cano
 public class Article implements Serializable {
     private final String description;
     private final Date dateFin;
